@@ -1,3 +1,16 @@
+# application.yml
 server:
-  port: 8888 
+  port: 8888
+spring:
+  datasource:
+    url: jdbc:hsqldb:hsql/data/simple-blog;shutdown=true
+    driverClassName: org.hsqldb.jdbc.JDBCDriver
+    username: sa
+    password:
+  jpa:
+    properties.hibernate.dialect: org.hibernate.dialect.HSQLDialect
+    hibernate.naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    hibernate.ddl-auto: update
+    show-sql: true
+    format-sql: true
   
