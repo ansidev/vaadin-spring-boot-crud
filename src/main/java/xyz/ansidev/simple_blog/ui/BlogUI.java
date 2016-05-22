@@ -2,6 +2,8 @@ package xyz.ansidev.simple_blog.ui;
 
 import javax.servlet.annotation.WebServlet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
@@ -20,10 +22,12 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
+import xyz.ansidev.simple_blog.constant.HtmlTag;
 import xyz.ansidev.simple_blog.constant.UserFormConstant;
 import xyz.ansidev.simple_blog.entity.User;
 import xyz.ansidev.simple_blog.message.UserRegistrationMessage;
 import xyz.ansidev.simple_blog.repository.UserRepository;
+import xyz.ansidev.simple_blog.util.HtmlUtils;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser
@@ -41,6 +45,8 @@ import xyz.ansidev.simple_blog.repository.UserRepository;
 // @Theme("reindeer")
 @SpringUI
 public class BlogUI extends UI {
+
+	private static final Logger LOG = LoggerFactory.getLogger(BlogUI.class);
 
 	private static final long serialVersionUID = 1L;
 
@@ -67,6 +73,9 @@ public class BlogUI extends UI {
 	protected void init(VaadinRequest vaadinRequest) {
 
 		/* Build layout */
+		// final CssLayout actionsGroup = new CssLayout(filter, addUserButton);
+		// final HorizontalLayout actionComponents = new
+		// HorizontalLayout(actionsGroup);
 		final HorizontalLayout actionComponents = new HorizontalLayout(filter, addUserButton);
 		final VerticalLayout verticalLayout = new VerticalLayout(actionComponents, grid);
 		final HorizontalLayout rootLayout = new HorizontalLayout(verticalLayout, userRegistrationForm);
@@ -74,16 +83,31 @@ public class BlogUI extends UI {
 		setContent(rootLayout);
 
 		/* Configure layouts and components */
+
+		// actionsGroup.setWidth(100, Unit.PERCENTAGE);
 		actionComponents.setSpacing(true);
+//		actionComponents.setWidth(100, Unit.PERCENTAGE);
+		actionComponents.setHeight(100, Unit.PERCENTAGE);
+		addUserButton.setWidth(120, Unit.PIXELS);
+
 		verticalLayout.setSpacing(true);
+		// You shouldn't use .setSizeFull() or setHeight(100, Unit.PERCENTAGE).
+		verticalLayout.setWidth(100, Unit.PERCENTAGE);
+
 		rootLayout.setMargin(true);
 		rootLayout.setSpacing(true);
+		rootLayout.setSizeFull();
+		rootLayout.setExpandRatio(verticalLayout, 6);
+		rootLayout.setExpandRatio(userRegistrationForm, 4);
 
-		grid.setHeight(300, Unit.PIXELS);
+		grid.setSizeFull();
 		grid.setColumns("id", "username", "email", "firstName", "lastName", "createdAt", "updatedAt");
+		grid.sort("id");
+
+		userRegistrationForm.setCaption(HtmlUtils.renderHtmlCode(HtmlTag.H2, UserFormConstant.FORM_CAPTION));
+		userRegistrationForm.setCaptionAsHtml(true);
 
 		filter.setInputPrompt(UserRegistrationMessage.FILTER_PLACEHOLDER);
-
 		// Replace listing with filtered content when user changes filter
 		filter.addTextChangeListener(e -> listUsers(e.getText()));
 
@@ -91,18 +115,17 @@ public class BlogUI extends UI {
 		grid.addSelectionListener(e -> {
 			if (e.getSelected().isEmpty()) {
 				userRegistrationForm.setVisible(false);
-			}
-			else {
+			} else {
 				userRegistrationForm.saveUser((User) grid.getSelectedRow());
 			}
 		});
-		
+
 		addUserButton.addClickListener(e -> userRegistrationForm.saveUser(new User()));
 
 		// Listen changes made by the editor, refresh data from backend
 		userRegistrationForm.setChangeHandler(() -> {
-			userRegistrationForm.setVisible(false);
-			listUsers(filter.getValue());
+			LOG.info("setChangeHandler");
+			 listUsers(filter.getValue());
 		});
 
 		// Initialize listing
@@ -113,6 +136,16 @@ public class BlogUI extends UI {
 	@WebServlet(urlPatterns = "/*", name = "BlogUIServlet", asyncSupported = true)
 	@VaadinServletConfiguration(ui = BlogUI.class, productionMode = false)
 	public static class BlogUIServlet extends VaadinServlet {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+	}
+
+	@WebServlet(urlPatterns = "/login", name = "LoginUIServlet", asyncSupported = true)
+	@VaadinServletConfiguration(ui = BlogUI.class, productionMode = false)
+	public static class LoginUIServlet extends VaadinServlet {
 
 		/**
 		 * 

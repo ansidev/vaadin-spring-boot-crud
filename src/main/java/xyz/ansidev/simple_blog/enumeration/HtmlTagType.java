@@ -1,5 +1,5 @@
 package xyz.ansidev.simple_blog.enumeration;
 
 public enum HtmlTagType {
-	OPEN, CLOSE
+	OPEN, CLOSE, SINGLE
 }

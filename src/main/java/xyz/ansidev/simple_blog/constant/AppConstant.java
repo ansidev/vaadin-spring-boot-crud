@@ -9,4 +9,5 @@ public class AppConstant {
 	public final static Locale LOCALE_VIETNAMESE = new Locale(LANG_VI);
 	
 	public final static String EMPTY = "";
+	public final static String WHITE_SPACE = " ";
 }

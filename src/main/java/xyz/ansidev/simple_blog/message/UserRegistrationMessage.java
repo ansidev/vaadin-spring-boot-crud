@@ -1,11 +1,16 @@
 package xyz.ansidev.simple_blog.message;
 
-import xyz.ansidev.simple_blog.constant.UserFormConstant;
-
 public class UserRegistrationMessage {
 
-	public final static String SAVE_SUCCESS = "Thanks %s for registering!";
+	public final static String SAVE_SUCCESS = "Saved user %s successfully!";
+	public final static String SAVE_FAILED = "Saved user %s failed!";
+	public final static String PASSWORD_CHANGED = "User password was changed!";
+
 	public final static String FILTER_PLACEHOLDER = "Filter by username";
-	public final static String ERROR_USERNAME_INVALID_LENGTH = "The name must be "
-			+ UserFormConstant.USERNAME_MIN_LENGTH + "-" + UserFormConstant.USERNAME_MAX_LENGTH + " letters (was {0})";
+
+	public final static String ERROR_NOT_MATCH_REQUIREMENTS = "%s not match requirements";
+	public final static String ERROR_EMPTY_NOT_ALLOWED = "%s must not empty or null";
+	public final static String ERROR_NULL_NOT_ALLOWED = "Null value is not allowed!";
+	public final static String ERROR_REQUIRED_FIELD = "Please give %s";
+	public final static String ERROR_INVALID_EMAIL = "Invalid email!";
 }
