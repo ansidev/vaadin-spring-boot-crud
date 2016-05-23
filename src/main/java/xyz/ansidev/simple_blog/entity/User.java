@@ -16,10 +16,14 @@ import xyz.ansidev.simple_blog.constant.AppConstant;
 @Entity
 @Table(name = "users")
 public class User implements Serializable {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
+
+	public static final String COLUMN_ID = "id";
+	public static final String COLUMN_USERNAME = "username";
+	public static final String COLUMN_EMAIL = "email";
+	public static final String COLUMN_PASSWORD = "password";
+	public static final String COLUMN_FIRST_NAME = "first_name";
+	public static final String COLUMN_LAST_NAME = "last_name";
 
 	@Id
 	@GeneratedValue
@@ -40,11 +44,14 @@ public class User implements Serializable {
 	@Column(name = "email")
 	private String email;
 
-//	@JoinColumn(name = "role_id")
-//	private Role role;
+	// @JoinColumn(name = "role_id")
+	// private Role role;
 
 	@OneToMany(mappedBy = "author")
 	private List<Post> posts;
+
+	@OneToMany(mappedBy = "owner")
+	private List<UserMeta> userMeta;
 
 	@Column(name = "created_at")
 	protected Date createdAt;
@@ -52,8 +59,6 @@ public class User implements Serializable {
 	@Column(name = "updated_at")
 	protected Date updatedAt;
 
-
-	
 	public User() {
 		super();
 		this.username = AppConstant.EMPTY;
@@ -124,13 +129,13 @@ public class User implements Serializable {
 		this.email = email;
 	}
 
-//	public Role getRole() {
-//		return role;
-//	}
-//
-//	public void setRole(Role role) {
-//		this.role = role;
-//	}
+	// public Role getRole() {
+	// return role;
+	// }
+	//
+	// public void setRole(Role role) {
+	// this.role = role;
+	// }
 
 	public List<Post> getPosts() {
 		return posts;
@@ -138,6 +143,14 @@ public class User implements Serializable {
 
 	public void setPosts(List<Post> posts) {
 		this.posts = posts;
+	}
+
+	public List<UserMeta> getUserMeta() {
+		return userMeta;
+	}
+
+	public void setUserMeta(List<UserMeta> userMeta) {
+		this.userMeta = userMeta;
 	}
 
 	public Date getCreatedAt() {
@@ -159,8 +172,8 @@ public class User implements Serializable {
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", password=" + password + ", firstName=" + firstName
-				+ ", lastName=" + lastName + ", email=" + email + ", posts=" + posts + ", createdAt="
-				+ createdAt + ", updatedAt=" + updatedAt + "]";
+				+ ", lastName=" + lastName + ", email=" + email + ", posts=" + posts + ", createdAt=" + createdAt
+				+ ", updatedAt=" + updatedAt + "]";
 	}
 
 }

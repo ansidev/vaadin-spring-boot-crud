@@ -2,7 +2,9 @@ package xyz.ansidev.simple_blog.constant;
 
 public class UserFormConstant {
 
-	public final static String FORM_CAPTION = "Add User Form";
+	public final static String FORM_CAPTION_PATTERN = "%s User Form";
+	public final static String FORM_CAPTION_ADD = String.format(FORM_CAPTION_PATTERN, "Add");
+	public final static String FORM_CAPTION_EDIT = String.format(FORM_CAPTION_PATTERN, "Edit");
 
 	public final static String ID = "ID";
 	public final static String USERNAME = "Username";
@@ -10,11 +12,22 @@ public class UserFormConstant {
 	public final static String LAST_NAME = "Last name";
 	public final static String EMAIL = "Email";
 	public final static String PASSWORD = "Password";
+	public final static String BIRTHDAY = "Birthday";
+	public final static String GENDER = "Gender";
+	public final static String NATIONALITY = "Nationality";
+	public final static String ADDRESS = "Address";
+	public final static String PHONE = "Phone";
+	
 	public final static String BUTTON_ADD = "Add %s";
 	public final static String BUTTON_SAVE = "Save";
 	public final static String BUTTON_DELETE = "Delete";
 	public final static String BUTTON_RESET = "Reset";
 	public final static String BUTTON_CANCEL = "Cancel";
+
+	public final static String GENDER_MALE = "Male";
+	public final static String GENDER_FEMALE = "Female";
+	
+	
 
 	/**
 	 * Explanation: <br>

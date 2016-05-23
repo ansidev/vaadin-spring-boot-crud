@@ -10,4 +10,11 @@ public class AppConstant {
 	
 	public final static String EMPTY = "";
 	public final static String WHITE_SPACE = " ";
+
+	// Must have columns for all tables
+	// Column names
+	public static final String COLUMN_CREATED_AT = "created_at";
+	public static final String COLUMN_UPDATED_AT = "updated_at";
+	
+	public static final float FULL_WIDTH = 100;
 }
