@@ -1,7 +1,7 @@
 package xyz.ansidev.simple_blog.entity;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -43,25 +43,25 @@ public class UserMeta implements Serializable {
 	private User owner;
 
 	@Column(name = "created_at")
-	protected Date createdAt;
+	protected LocalDateTime createdAt;
 
 	@Column(name = "updated_at")
-	protected Date updatedAt;
+	protected LocalDateTime updatedAt;
 
 	public UserMeta() {
 		super();
 		this.name = AppConstant.EMPTY;
 		this.value = AppConstant.EMPTY;
-		this.createdAt = new Date();
-		this.updatedAt = new Date();
+		this.createdAt = LocalDateTime.now();
+		this.updatedAt = LocalDateTime.now();
 	}
 
 	public UserMeta(String name, String value) {
 		super();
 		this.name = name;
 		this.value = value;
-		this.createdAt = new Date();
-		this.updatedAt = new Date();
+		this.createdAt = LocalDateTime.now();
+		this.updatedAt = LocalDateTime.now();
 	}
 
 	public UserMeta(String name, String value, User owner) {
@@ -69,8 +69,8 @@ public class UserMeta implements Serializable {
 		this.name = name;
 		this.value = value;
 		this.owner = owner;
-		this.createdAt = new Date();
-		this.updatedAt = new Date();
+		this.createdAt = LocalDateTime.now();
+		this.updatedAt = LocalDateTime.now();
 	}
 
 	public Integer getId() {
@@ -105,19 +105,19 @@ public class UserMeta implements Serializable {
 		this.owner = owner;
 	}
 
-	public Date getCreatedAt() {
+	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(Date createdAt) {
+	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	public Date getUpdatedAt() {
+	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
 	}
 
-	public void setUpdatedAt(Date updatedAt) {
+	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
 	}
 

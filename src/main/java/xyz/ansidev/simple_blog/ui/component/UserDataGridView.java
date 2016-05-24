@@ -1,15 +1,22 @@
 package xyz.ansidev.simple_blog.ui.component;
 
+import java.util.Locale;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.converter.Converter;
+import com.vaadin.data.util.converter.StringToDateConverter;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.renderers.DateRenderer;
+import com.vaadin.ui.renderers.HtmlRenderer;
+import com.vaadin.ui.renderers.Renderer;
 
 import xyz.ansidev.simple_blog.constant.AppConstant;
 import xyz.ansidev.simple_blog.constant.HtmlTag;
@@ -57,6 +64,7 @@ public class UserDataGridView extends VerticalLayout {
 
 		grid.setSizeFull();
 		grid.setColumns("id", "username", "email", "firstName", "lastName", "createdAt", "updatedAt");
+		// grid.setColumns("id", "username", "email", "firstName", "lastName");
 		grid.sort("id");
 		// Connect selected Customer to editor or hide if none is selected
 		grid.addSelectionListener(e -> {
@@ -69,6 +77,10 @@ public class UserDataGridView extends VerticalLayout {
 			}
 		});
 
+		// grid.getColumn("createdAt").setRenderer(new LocalDateTimeRenderer(AppConstant.DATE_FORMAT_STRING));
+//		LocalDateTimeRenderer renderer = new LocalDateTimeRenderer(AppConstant.DATE_FORMAT_STRING);
+//		LocalDateTimeToStringConverter converter = new LocalDateTimeToStringConverter(AppConstant.DATE_FORMAT_STRING);
+		// grid.getColumn("createdAt").setConverter(new StringToLocalDateTimeConverter(AppConstant.DATE_FORMAT_STRING));
 		addComponents(actionComponents, grid);
 		setSpacing(true);
 		// You shouldn't use .setSizeFull() or setHeight(100, Unit.PERCENTAGE).

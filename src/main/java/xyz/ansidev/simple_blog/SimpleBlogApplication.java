@@ -32,7 +32,7 @@ public class SimpleBlogApplication {
 //
 //			Faker faker = new Faker(Locale.US);
 //
-//			for (int i = 0; i < 100000; i++) {
+//			for (int i = 0; i < 10000; i++) {
 //				User user = new User();
 //				user.setFirstName(faker.name().firstName());
 //				user.setLastName(faker.name().lastName());
