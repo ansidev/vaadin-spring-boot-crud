@@ -26,7 +26,7 @@ public class SimpleCrudApplication {
 	}
 
 	private static final int fakerCount = 500;
-	private static final boolean isFaker = true;
+	private static final boolean isFaker = false;
 
 	@Bean
 	public CommandLineRunner loadData(UserRepository repository) {
