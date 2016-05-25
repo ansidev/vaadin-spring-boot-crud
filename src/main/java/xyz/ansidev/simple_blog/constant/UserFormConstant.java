@@ -10,6 +10,7 @@ public class UserFormConstant {
 	public final static String USERNAME = "Username";
 	public final static String FIRST_NAME = "First name";
 	public final static String LAST_NAME = "Last name";
+	public final static String FULL_NAME = "Full name";
 	public final static String EMAIL = "Email";
 	public final static String PASSWORD = "Password";
 	public final static String BIRTHDAY = "Birthday";

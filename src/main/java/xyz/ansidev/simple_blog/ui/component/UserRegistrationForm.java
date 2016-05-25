@@ -2,9 +2,8 @@ package xyz.ansidev.simple_blog.ui.component;
 
 import java.util.ArrayList;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.viritin.button.ConfirmButton;
 
 import com.vaadin.data.Validator.EmptyValueException;
 import com.vaadin.data.Validator.InvalidValueException;
@@ -19,6 +18,7 @@ import com.vaadin.shared.Position;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Notification;
@@ -43,7 +43,7 @@ import xyz.ansidev.simple_blog.util.validator.IFormValidator;
 @UIScope
 public class UserRegistrationForm extends FormLayout implements IFormValidator {
 
-	private static final Logger LOG = LoggerFactory.getLogger(UserRegistrationForm.class);
+//	private static final Logger LOG = LoggerFactory.getLogger(UserRegistrationForm.class);
 
 	private static final long serialVersionUID = 1L;
 
@@ -64,7 +64,8 @@ public class UserRegistrationForm extends FormLayout implements IFormValidator {
 
 	/* Action Buttons */
 	Button btnSave = new Button(UserFormConstant.BUTTON_SAVE, FontAwesome.SAVE);
-	Button btnDelete = new Button(UserFormConstant.BUTTON_DELETE, FontAwesome.TRASH);
+	ConfirmButton btnDelete = new ConfirmButton(FontAwesome.TRASH, UserFormConstant.BUTTON_DELETE, UserRegistrationMessage.MESSAGE_CONFIRM_DELETE,
+			this::remove);
 	Button btnReset = new Button(UserFormConstant.BUTTON_RESET, FontAwesome.TIMES);
 	Button btnCancel = new Button(UserFormConstant.BUTTON_CANCEL, FontAwesome.BAN);
 	CssLayout actionButtons = new CssLayout(btnSave, btnDelete, btnReset, btnCancel);
@@ -139,9 +140,16 @@ public class UserRegistrationForm extends FormLayout implements IFormValidator {
 			saveNotification.show(Page.getCurrent());
 		});
 
-		btnDelete.addClickListener(e -> userRepository.delete(this.user));
 		btnCancel.addClickListener(e -> this.setVisible(false));
 		btnReset.addClickListener(e -> this.saveUser(this.user, this.isNewUser));
+	}
+
+	public boolean isNewUser() {
+		return isNewUser;
+	}
+
+	public void setNewUser(boolean isNewUser) {
+		this.isNewUser = isNewUser;
 	}
 
 	private String getAllErrorsAsString(ArrayList<String> errors) {
@@ -286,11 +294,7 @@ public class UserRegistrationForm extends FormLayout implements IFormValidator {
 		btnDelete.addClickListener(e -> h.onChange());
 	}
 
-	public boolean isNewUser() {
-		return isNewUser;
-	}
-
-	public void setNewUser(boolean isNewUser) {
-		this.isNewUser = isNewUser;
+	public void remove(ClickEvent e) {
+		userRepository.delete(this.user);
 	}
 }

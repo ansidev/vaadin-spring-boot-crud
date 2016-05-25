@@ -1,8 +1,5 @@
 package xyz.ansidev.simple_blog.ui.component;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
@@ -73,7 +70,7 @@ public class UserDataGridView extends VerticalLayout {
 				AppConstant.COLUMN_ACTIONS);
 
 		HeaderRow row = grid.prependHeaderRow();
-		row.join("firstName", "lastName").setHtml("<b>Full name</b>");
+		row.join("firstName", "lastName").setHtml(HtmlUtils.renderHtmlCode(HtmlTag.STRONG, UserFormConstant.FULL_NAME));
 
 		grid.sort("id");
 		// Connect selected User to editor or hide if none is selected
@@ -129,11 +126,6 @@ public class UserDataGridView extends VerticalLayout {
 			}
 		}
 
-		// grid.getColumn("createdAt").setRenderer(new LocalDateTimeRenderer(AppConstant.DATE_FORMAT_STRING));
-		// LocalDateTimeRenderer renderer = new LocalDateTimeRenderer(AppConstant.DATE_FORMAT_STRING);
-		// LocalDateTimeToStringConverter converter = new
-		// LocalDateTimeToStringConverter(AppConstant.DATE_FORMAT_STRING);
-		// grid.getColumn("createdAt").setConverter(new StringToLocalDateTimeConverter(AppConstant.DATE_FORMAT_STRING));
 		addComponents(actionComponents, grid);
 		setSpacing(true);
 		// You shouldn't use .setSizeFull() or setHeight(100, Unit.PERCENTAGE).
