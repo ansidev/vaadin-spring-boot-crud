@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import com.github.javafaker.Faker;
 
 import xyz.ansidev.simple_blog.constant.AppConstant;
+import xyz.ansidev.simple_blog.encoder.bcrypt.BCrypt;
 import xyz.ansidev.simple_blog.entity.User;
 import xyz.ansidev.simple_blog.repository.UserRepository;
 import xyz.ansidev.simple_blog.util.UserUtils;
@@ -32,7 +33,7 @@ public class SimpleBlogApplication {
 //
 //			Faker faker = new Faker(Locale.US);
 //
-//			for (int i = 0; i < 10000; i++) {
+//			for (int i = 0; i < 1; i++) {
 //				User user = new User();
 //				user.setFirstName(faker.name().firstName());
 //				user.setLastName(faker.name().lastName());
@@ -46,6 +47,8 @@ public class SimpleBlogApplication {
 //				}
 //
 //				user.setEmail(username + "@" + faker.internet().domainName());
+//				String hashedPassword = BCrypt.hashpw(username, BCrypt.gensalt(12));
+//				user.setPassword(hashedPassword);
 //
 //				// Save user
 //				repository.save(user);

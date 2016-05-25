@@ -17,8 +17,13 @@ public class AppConstant {
 
 	// Must have columns for all tables
 	// Column names
+	public static final String COLUMN_ID = "id";
 	public static final String COLUMN_CREATED_AT = "created_at";
 	public static final String COLUMN_UPDATED_AT = "updated_at";
+	public static final String COLUMN_ACTIONS = "actions";
+	
+	public static final String CAPTION_OK_BUTTON = "OK";
+	public static final String CAPTION_CANCEL_BUTTON = "Cancel";
 	
 	public static final float FULL_WIDTH = 100;
 }

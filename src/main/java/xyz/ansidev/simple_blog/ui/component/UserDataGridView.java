@@ -1,22 +1,26 @@
 package xyz.ansidev.simple_blog.ui.component;
 
-import java.util.Locale;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.converter.Converter;
-import com.vaadin.data.util.converter.StringToDateConverter;
+import com.vaadin.data.util.GeneratedPropertyContainer;
+import com.vaadin.data.util.PropertyValueGenerator;
+import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.HeaderCell;
+import com.vaadin.ui.Grid.HeaderRow;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.renderers.DateRenderer;
-import com.vaadin.ui.renderers.HtmlRenderer;
-import com.vaadin.ui.renderers.Renderer;
+import com.vaadin.ui.renderers.ButtonRenderer;
+import com.vaadin.ui.themes.ValoTheme;
 
 import xyz.ansidev.simple_blog.constant.AppConstant;
 import xyz.ansidev.simple_blog.constant.HtmlTag;
@@ -41,6 +45,8 @@ public class UserDataGridView extends VerticalLayout {
 
 	private final UserRepository userRepository;
 
+	BeanItemContainer<User> userBeanItemContainer;
+
 	@Autowired
 	public UserDataGridView(UserRepository userRepository, UserRegistrationForm userRegistrationForm) {
 		this.userRegistrationForm = userRegistrationForm;
@@ -63,10 +69,14 @@ public class UserDataGridView extends VerticalLayout {
 		actionComponents.setHeight(100, Unit.PERCENTAGE);
 
 		grid.setSizeFull();
-		grid.setColumns("id", "username", "email", "firstName", "lastName", "createdAt", "updatedAt");
-		// grid.setColumns("id", "username", "email", "firstName", "lastName");
+		grid.setColumns("id", "username", "email", "firstName", "lastName", "createdAt", "updatedAt",
+				AppConstant.COLUMN_ACTIONS);
+
+		HeaderRow row = grid.prependHeaderRow();
+		row.join("firstName", "lastName").setHtml("<b>Full name</b>");
+
 		grid.sort("id");
-		// Connect selected Customer to editor or hide if none is selected
+		// Connect selected User to editor or hide if none is selected
 		grid.addSelectionListener(e -> {
 			if (e.getSelected().isEmpty()) {
 				userRegistrationForm.setVisible(false);
@@ -77,9 +87,52 @@ public class UserDataGridView extends VerticalLayout {
 			}
 		});
 
+		grid.getColumn(AppConstant.COLUMN_ACTIONS).setRenderer(new ButtonRenderer(e -> {
+			User userToDelete = (User) e.getItemId();
+			userRepository.delete(userToDelete);
+			grid.getContainerDataSource().removeItem(e.getItemId());
+		}));
+
+		// Create a header row to hold column filters
+		HeaderRow filterRow = grid.appendHeaderRow();
+
+		// Set up a filter for all columns
+		for (Object pid : grid.getContainerDataSource().getContainerPropertyIds()) {
+			HeaderCell cell = filterRow.getCell(pid);
+
+			// Have an input field to use for filter
+			TextField filterField = new TextField();
+			filterField.addStyleName(ValoTheme.TEXTFIELD_TINY);
+			filterField.setInputPrompt("Filter");
+
+			// Set filter field width based on data type
+			if (pid.equals(AppConstant.COLUMN_ID)) {
+				filterField.setColumns(5);
+				cell.setStyleName("align-right");
+			} else {
+				filterField.setColumns(7);
+			}
+
+			// Update filter When the filter input is changed
+			filterField.addTextChangeListener(change -> {
+				// Can't modify filters so need to replace
+				userBeanItemContainer.removeContainerFilters(pid);
+
+				// (Re)create the filter if necessary
+				if (!change.getText().isEmpty())
+					userBeanItemContainer
+							.addContainerFilter(new SimpleStringFilter(pid, change.getText(), true, false));
+			});
+
+			if (!AppConstant.COLUMN_ACTIONS.equals(pid)) {
+				cell.setComponent(filterField);
+			}
+		}
+
 		// grid.getColumn("createdAt").setRenderer(new LocalDateTimeRenderer(AppConstant.DATE_FORMAT_STRING));
-//		LocalDateTimeRenderer renderer = new LocalDateTimeRenderer(AppConstant.DATE_FORMAT_STRING);
-//		LocalDateTimeToStringConverter converter = new LocalDateTimeToStringConverter(AppConstant.DATE_FORMAT_STRING);
+		// LocalDateTimeRenderer renderer = new LocalDateTimeRenderer(AppConstant.DATE_FORMAT_STRING);
+		// LocalDateTimeToStringConverter converter = new
+		// LocalDateTimeToStringConverter(AppConstant.DATE_FORMAT_STRING);
 		// grid.getColumn("createdAt").setConverter(new StringToLocalDateTimeConverter(AppConstant.DATE_FORMAT_STRING));
 		addComponents(actionComponents, grid);
 		setSpacing(true);
@@ -101,13 +154,32 @@ public class UserDataGridView extends VerticalLayout {
 	 * @param keyword
 	 *            User input keyword
 	 */
+	@SuppressWarnings("serial")
 	public void listUsers(String keyword) {
+		// BeanItemContainer<User> userBeanItemContainer;
 		if (StringUtils.isEmpty(keyword)) {
-			grid.setContainerDataSource(new BeanItemContainer<User>(User.class, userRepository.findAll()));
+			userBeanItemContainer = new BeanItemContainer<User>(User.class, userRepository.findAll());
 		} else {
-			grid.setContainerDataSource(new BeanItemContainer<User>(User.class,
-					userRepository.findByUsernameStartsWithIgnoreCase(keyword)));
+			userBeanItemContainer = new BeanItemContainer<User>(User.class,
+					userRepository.findByUsernameStartsWithIgnoreCase(keyword));
 		}
+		GeneratedPropertyContainer extendUserBeanItemContainer = new GeneratedPropertyContainer(userBeanItemContainer);
+		extendUserBeanItemContainer.addGeneratedProperty(AppConstant.COLUMN_ACTIONS,
+				new PropertyValueGenerator<String>() {
+
+					@Override
+					public String getValue(Item item, Object itemId, Object propertyId) {
+						return UserFormConstant.BUTTON_DELETE; // The caption
+					}
+
+					@Override
+					public Class<String> getType() {
+						return String.class;
+					}
+				});
+		grid.setContainerDataSource(extendUserBeanItemContainer);
+
+		// Render a button that deletes the data row (item)
 	}
 
 }

@@ -1,4 +1,4 @@
-package xyz.ansidev.simple_blog.util.renderer;
+package xyz.ansidev.simple_blog.client.renderer;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
