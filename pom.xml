@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>xyz.ansidev</groupId>
-	<artifactId>simple_blog</artifactId>
+	<artifactId>simple_crud</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
-	<name>Simple Blog</name>
-	<description>Simple Blog built with Spring Boot and Vaadin</description>
+	<name>Simple CRUD</name>
+	<description>Simple CRUD Application built with Spring Boot and Vaadin</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>

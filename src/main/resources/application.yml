@@ -3,7 +3,7 @@ server:
   port: 8888
 spring:
   datasource:
-    url: jdbc:hsqldb:hsql/data/simple-blog;shutdown=true
+    url: jdbc:hsqldb:hsql/data/simple-crud;shutdown=true
     driverClassName: org.hsqldb.jdbc.JDBCDriver
     username: sa
     password:
