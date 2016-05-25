@@ -51,13 +51,15 @@ public class UserRegistrationForm extends FormLayout implements IFormValidator {
 
 	private User user;
 
+	private boolean isNewUser;
+
 	final TextField username = new TextField(UserFormConstant.USERNAME);
 	final TextField email = new TextField(UserFormConstant.EMAIL);
 	final PasswordField password = new PasswordField(UserFormConstant.PASSWORD);
 	final TextField firstName = new TextField(UserFormConstant.FIRST_NAME);
 	final TextField lastName = new TextField(UserFormConstant.LAST_NAME);
 	final OptionGroup gender = new OptionGroup(UserFormConstant.GENDER);
-	
+
 	ArrayList<String> errorMessages = new ArrayList<String>();
 
 	/* Action Buttons */
@@ -139,7 +141,7 @@ public class UserRegistrationForm extends FormLayout implements IFormValidator {
 
 		btnDelete.addClickListener(e -> userRepository.delete(this.user));
 		btnCancel.addClickListener(e -> this.setVisible(false));
-		btnReset.addClickListener(e -> this.saveUser(this.user));
+		btnReset.addClickListener(e -> this.saveUser(this.user, this.isNewUser));
 	}
 
 	private String getAllErrorsAsString(ArrayList<String> errors) {
@@ -150,7 +152,7 @@ public class UserRegistrationForm extends FormLayout implements IFormValidator {
 		return errorsToString;
 	}
 
-	public final void saveUser(User user) {
+	public final void saveUser(User user, boolean isNewUser) {
 		final boolean persisted = user.getId() != null;
 		if (persisted) {
 			// Find fresh entity for editing
@@ -174,6 +176,11 @@ public class UserRegistrationForm extends FormLayout implements IFormValidator {
 
 		// Select all text in username field automatically
 		username.selectAll();
+		if (isNewUser != true) {
+			this.isNewUser = false;
+		} else {
+			this.isNewUser = isNewUser;
+		}
 	}
 
 	/**
@@ -213,7 +220,6 @@ public class UserRegistrationForm extends FormLayout implements IFormValidator {
 			username.setValidationVisible(true);
 			errorMessage = String.format(UserRegistrationMessage.ERROR_EMPTY_NOT_ALLOWED, UserFormConstant.USERNAME);
 			username.setRequiredError(errorMessage);
-
 			errors.add(errorMessage);
 		} catch (InvalidValueException e) {
 			username.setValidationVisible(true);
@@ -237,11 +243,15 @@ public class UserRegistrationForm extends FormLayout implements IFormValidator {
 		try {
 			password.validate();
 		} catch (EmptyValueException e) {
-			password.setValidationVisible(true);
-			errorMessage = String.format(UserRegistrationMessage.ERROR_EMPTY_NOT_ALLOWED, UserFormConstant.PASSWORD);
-			password.setRequiredError(errorMessage);
+			// Allow empty password field if not new user.
+			if (this.isNewUser) {
+				password.setValidationVisible(true);
+				errorMessage = String.format(UserRegistrationMessage.ERROR_EMPTY_NOT_ALLOWED,
+						UserFormConstant.PASSWORD);
+				password.setRequiredError(errorMessage);
 
-			errors.add(errorMessage);
+				errors.add(errorMessage);
+			}
 		} catch (InvalidValueException e) {
 			password.setValidationVisible(true);
 			errors.add(e.getMessage());
@@ -274,5 +284,13 @@ public class UserRegistrationForm extends FormLayout implements IFormValidator {
 		// ChangeHandler is notified when either save or delete is clicked
 		btnSave.addClickListener(e -> h.onChange());
 		btnDelete.addClickListener(e -> h.onChange());
+	}
+
+	public boolean isNewUser() {
+		return isNewUser;
+	}
+
+	public void setNewUser(boolean isNewUser) {
+		this.isNewUser = isNewUser;
 	}
 }

@@ -44,7 +44,7 @@ public class UserDataGridView extends VerticalLayout {
 		addUserButton.setWidth(120, Unit.PIXELS);
 		addUserButton.addClickListener(e -> {
 			userRegistrationForm.setCaption(HtmlUtils.renderHtmlCode(HtmlTag.H2, UserFormConstant.FORM_CAPTION_ADD));
-			this.userRegistrationForm.saveUser(new User());
+			this.userRegistrationForm.saveUser(new User(), true);
 		});
 
 		filter.setInputPrompt(UserRegistrationMessage.FILTER_PLACEHOLDER);
@@ -65,7 +65,7 @@ public class UserDataGridView extends VerticalLayout {
 			} else {
 				userRegistrationForm
 						.setCaption(HtmlUtils.renderHtmlCode(HtmlTag.H2, UserFormConstant.FORM_CAPTION_EDIT));
-				userRegistrationForm.saveUser((User) grid.getSelectedRow());
+				userRegistrationForm.saveUser((User) grid.getSelectedRow(), false);
 			}
 		});
 
