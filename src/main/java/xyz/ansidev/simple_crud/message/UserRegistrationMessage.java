@@ -6,7 +6,7 @@ public class UserRegistrationMessage {
 	public final static String SAVE_FAILED = "Saved user %s failed!";
 	public final static String PASSWORD_CHANGED = "User password was changed!";
 
-	public final static String FILTER_PLACEHOLDER = "Filter by username";
+	public final static String FILTER_PLACEHOLDER = "Filter";
 	
 	public final static String MESSAGE_CONFIRM_DELETE = "Are you sure want to delete this user?";
 

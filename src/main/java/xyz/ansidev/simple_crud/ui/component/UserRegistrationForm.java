@@ -42,9 +42,6 @@ import xyz.ansidev.simple_crud.util.validator.IFormValidator;
 @SpringComponent
 @UIScope
 public class UserRegistrationForm extends FormLayout implements IFormValidator {
-
-//	private static final Logger LOG = LoggerFactory.getLogger(UserRegistrationForm.class);
-
 	private static final long serialVersionUID = 1L;
 
 	private final UserRepository userRepository;

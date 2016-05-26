@@ -27,31 +27,31 @@ public class User implements Serializable {
 
 	@Id
 	@GeneratedValue
-	private Integer id;
+	protected Integer id;
 
 	@Column(name = "username")
-	private String username;
+	protected String username;
 
 	@Column(name = "password")
-	private String password;
+	protected String password;
 
 	@Column(name = "first_name")
-	private String firstName;
+	protected String firstName;
 
 	@Column(name = "last_name")
-	private String lastName;
+	protected String lastName;
 
 	@Column(name = "email")
-	private String email;
+	protected String email;
 
 	// @JoinColumn(name = "role_id")
 	// private Role role;
 
 	@OneToMany(mappedBy = "author")
-	private List<Post> posts;
+	protected List<Post> posts;
 
 	@OneToMany(mappedBy = "owner")
-	private List<UserMeta> userMeta;
+	protected List<UserMeta> userMeta;
 
 	@Column(name = "created_at")
 	protected LocalDateTime createdAt;
@@ -79,6 +79,21 @@ public class User implements Serializable {
 		this.email = email;
 		this.createdAt = LocalDateTime.now();
 		this.updatedAt = LocalDateTime.now();
+	}
+
+	public User(Integer id, String username, String password, String firstName, String lastName, String email,
+			List<Post> posts, List<UserMeta> userMeta, LocalDateTime createdAt, LocalDateTime updatedAt) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.password = password;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.posts = posts;
+		this.userMeta = userMeta;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
 	}
 
 	public Integer getId() {

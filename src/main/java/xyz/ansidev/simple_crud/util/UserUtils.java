@@ -82,6 +82,15 @@ public class UserUtils {
 		field.setRequired(required);
 	}
 
+	/**
+	 * Check if user changed the password or not.
+	 * 
+	 * @param user
+	 *            User
+	 * @param userRepository
+	 *            Repository for User
+	 * @return true if password was changed, else return false.
+	 */
 	public static boolean checkIfUserPasswordChanged(User user, UserRepository userRepository) {
 		String password = user.getPassword();
 		final boolean persisted = user.getId() != null;
