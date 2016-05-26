@@ -61,8 +61,8 @@ public class UserRegistrationForm extends FormLayout implements IFormValidator {
 
 	/* Action Buttons */
 	Button btnSave = new Button(UserFormConstant.BUTTON_SAVE, FontAwesome.SAVE);
-	ConfirmButton btnDelete = new ConfirmButton(FontAwesome.TRASH, UserFormConstant.BUTTON_DELETE, UserRegistrationMessage.MESSAGE_CONFIRM_DELETE,
-			this::remove);
+	ConfirmButton btnDelete = new ConfirmButton(FontAwesome.TRASH, UserFormConstant.BUTTON_DELETE,
+			UserRegistrationMessage.MESSAGE_CONFIRM_DELETE, this::remove);
 	Button btnReset = new Button(UserFormConstant.BUTTON_RESET, FontAwesome.TIMES);
 	Button btnCancel = new Button(UserFormConstant.BUTTON_CANCEL, FontAwesome.BAN);
 	CssLayout actionButtons = new CssLayout(btnSave, btnDelete, btnReset, btnCancel);
@@ -97,6 +97,7 @@ public class UserRegistrationForm extends FormLayout implements IFormValidator {
 		btnSave.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 
 		btnDelete.setStyleName(ValoTheme.BUTTON_DANGER);
+		btnReset.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 
 		// Wire action buttons to save, delete, reset and cancel
 		btnSave.addClickListener(e -> {
@@ -211,8 +212,10 @@ public class UserRegistrationForm extends FormLayout implements IFormValidator {
 					String.format(UserRegistrationMessage.ERROR_EMPTY_NOT_ALLOWED, UserFormConstant.EMAIL));
 		});
 		password.addTextChangeListener(e -> {
-			password.setRequiredError(
-					String.format(UserRegistrationMessage.ERROR_EMPTY_NOT_ALLOWED, UserFormConstant.PASSWORD));
+			if (this.isNewUser) {
+				password.setRequiredError(
+						String.format(UserRegistrationMessage.ERROR_EMPTY_NOT_ALLOWED, UserFormConstant.PASSWORD));
+			}
 		});
 	}
 
