@@ -37,10 +37,10 @@ public class UserFormConstant {
 	 * .{5,10} 			# length between 5 and 10 characters <br>
 	 * $				# end-of-string <br>
 	 **/
-	public final static String USERNAME_PATTERN = "^[a-zA-Z0-9]{5,10}$";
+	public final static String USERNAME_PATTERN = "^[a-zA-Z0-9]{5,15}$";
 	public final static String USERNAME_DESCRIPTION = "Requirement for username: <br>"
 			+ "- Only allow a-z, A-Z, 0-9 characters. <br>"
-			+ "- Length between 5 and 10 characters. <br>";
+			+ "- Length between 5 and 15 characters. <br>";
 
 	/**
 	 * Explanation: <br>
