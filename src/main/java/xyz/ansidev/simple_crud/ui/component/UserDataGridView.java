@@ -1,14 +1,12 @@
 package xyz.ansidev.simple_crud.ui.component;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
-import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.GeneratedPropertyContainer;
-import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
@@ -27,9 +25,9 @@ import xyz.ansidev.simple_crud.constant.UserFormConstant;
 import xyz.ansidev.simple_crud.entity.User;
 import xyz.ansidev.simple_crud.message.UserRegistrationMessage;
 import xyz.ansidev.simple_crud.repository.UserRepository;
+import xyz.ansidev.simple_crud.ui.model.UserModel;
 import xyz.ansidev.simple_crud.util.CustomStringUtils;
 import xyz.ansidev.simple_crud.util.HtmlUtils;
-import xyz.ansidev.simple_crud.util.formatter.CustomDateFormatter;
 
 public class UserDataGridView extends VerticalLayout {
 
@@ -46,7 +44,7 @@ public class UserDataGridView extends VerticalLayout {
 
 	private final UserRepository userRepository;
 
-	BeanItemContainer<User> userBeanItemContainer;
+	BeanItemContainer<UserModel> userBeanItemContainer;
 
 	@Autowired
 	public UserDataGridView(UserRepository userRepository, UserRegistrationForm userRegistrationForm) {
@@ -150,45 +148,22 @@ public class UserDataGridView extends VerticalLayout {
 	 */
 	@SuppressWarnings("serial")
 	public void listUsers(String keyword) {
-		// BeanItemContainer<User> userBeanItemContainer;
+		List<User> userList;
+		List<UserModel> userModelList = new ArrayList<UserModel>();
+		UserModel userModel;
+
 		if (StringUtils.isEmpty(keyword)) {
-			userBeanItemContainer = new BeanItemContainer<User>(User.class, userRepository.findAll());
+			userList = userRepository.findAll();
 		} else {
-			userBeanItemContainer = new BeanItemContainer<User>(User.class,
-					userRepository.findByUsernameStartsWithIgnoreCase(keyword));
+			userList = userRepository.findByUsernameStartsWithIgnoreCase(keyword);
 		}
-		GeneratedPropertyContainer extendUserBeanItemContainer = new GeneratedPropertyContainer(userBeanItemContainer);
-		extendUserBeanItemContainer.addGeneratedProperty(AppConstant.COLUMN_CREATED_DATE,
-				new PropertyValueGenerator<String>() {
 
-					@Override
-					public String getValue(Item item, Object itemId, Object propertyId) {
-						User user = (User) itemId;
-						LocalDateTime createdAt = user.getCreatedAt();
-						return CustomDateFormatter.toDate(createdAt);
-					}
-
-					@Override
-					public Class<String> getType() {
-						return String.class;
-					}
-				});
-		extendUserBeanItemContainer.addGeneratedProperty(AppConstant.COLUMN_UPDATED_DATE,
-				new PropertyValueGenerator<String>() {
-
-					@Override
-					public String getValue(Item item, Object itemId, Object propertyId) {
-						User user = (User) itemId;
-						LocalDateTime updatedAt = user.getUpdatedAt();
-						return CustomDateFormatter.toDate(updatedAt);
-					}
-
-					@Override
-					public Class<String> getType() {
-						return String.class;
-					}
-				});
-		grid.setContainerDataSource(extendUserBeanItemContainer);
+		for (User user : userList) {
+			userModel = new UserModel(user);
+			userModelList.add(userModel);
+		}
+		userBeanItemContainer = new BeanItemContainer<UserModel>(UserModel.class, userModelList);
+		grid.setContainerDataSource(userBeanItemContainer);
 	}
 
 }
