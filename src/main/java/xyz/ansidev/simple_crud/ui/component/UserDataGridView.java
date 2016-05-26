@@ -6,7 +6,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.GeneratedPropertyContainer;
+import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
@@ -17,6 +20,7 @@ import com.vaadin.ui.Grid.HeaderRow;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.renderers.ButtonRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
 import xyz.ansidev.simple_crud.constant.AppConstant;
@@ -68,17 +72,26 @@ public class UserDataGridView extends VerticalLayout {
 		actionComponents.setHeight(100, Unit.PERCENTAGE);
 
 		grid.setSizeFull();
+		
 		grid.setColumns(AppConstant.COLUMN_ID, AppConstant.COLUMN_USERNAME, AppConstant.COLUMN_EMAIL,
 				AppConstant.COLUMN_FIRST_NAME, AppConstant.COLUMN_LAST_NAME, AppConstant.COLUMN_CREATED_DATE,
-				AppConstant.COLUMN_UPDATED_DATE);
+				AppConstant.COLUMN_UPDATED_DATE, AppConstant.COLUMN_ACTIONS);
 		// Set column header caption and sortable for generated columns
 		Column createdDate = grid.getColumn(AppConstant.COLUMN_CREATED_DATE);
-		createdDate.setHeaderCaption(CustomStringUtils.splitCamelCase(AppConstant.COLUMN_CREATED_AT));
-		createdDate.setSortable(true);
-
 		Column updatedDate = grid.getColumn(AppConstant.COLUMN_UPDATED_DATE);
+		Column actions = grid.getColumn(AppConstant.COLUMN_ACTIONS);
+
+		createdDate.setHeaderCaption(CustomStringUtils.splitCamelCase(AppConstant.COLUMN_CREATED_AT));
 		updatedDate.setHeaderCaption(CustomStringUtils.splitCamelCase(AppConstant.COLUMN_UPDATED_AT));
+
+		createdDate.setSortable(true);
 		updatedDate.setSortable(true);
+
+		actions.setRenderer(new ButtonRenderer(e -> {
+			User userToDelete = ((UserModel) e.getItemId()).toUser();
+			userRepository.delete(userToDelete);
+			grid.getContainerDataSource().removeItem(e.getItemId());
+		}));
 
 		// Join two columns into a parent column
 		HeaderRow row = grid.prependHeaderRow();
@@ -109,8 +122,13 @@ public class UserDataGridView extends VerticalLayout {
 			filterField.addStyleName(ValoTheme.TEXTFIELD_TINY);
 			filterField.setInputPrompt(AppConstant.CAPTION_FILTER_BOX);
 
-			// Set filter field width
-			filterField.setColumns(13);
+			// Set filter field width based on column
+			if (pid.equals(AppConstant.COLUMN_ID)) {
+				filterField.setColumns(5);
+				cell.setStyleName("align-right");
+			} else {
+				filterField.setColumns(7);
+			}
 
 			// Update filter When the filter input is changed
 			filterField.addTextChangeListener(change -> {
@@ -123,7 +141,9 @@ public class UserDataGridView extends VerticalLayout {
 							.addContainerFilter(new SimpleStringFilter(pid, change.getText(), true, false));
 			});
 
-			cell.setComponent(filterField);
+			if (!AppConstant.COLUMN_ACTIONS.equals(pid)) {
+				cell.setComponent(filterField);
+			}
 		}
 
 		addComponents(actionComponents, grid);
@@ -163,7 +183,21 @@ public class UserDataGridView extends VerticalLayout {
 			userModelList.add(userModel);
 		}
 		userBeanItemContainer = new BeanItemContainer<UserModel>(UserModel.class, userModelList);
-		grid.setContainerDataSource(userBeanItemContainer);
+		GeneratedPropertyContainer extendUserBeanItemContainer = new GeneratedPropertyContainer(userBeanItemContainer);
+		extendUserBeanItemContainer.addGeneratedProperty(AppConstant.COLUMN_ACTIONS,
+				new PropertyValueGenerator<String>() {
+
+					@Override
+					public String getValue(Item item, Object itemId, Object propertyId) {
+						return UserFormConstant.BUTTON_DELETE; // The caption
+					}
+
+					@Override
+					public Class<String> getType() {
+						return String.class;
+					}
+				});
+		grid.setContainerDataSource(extendUserBeanItemContainer);
 	}
 
 }

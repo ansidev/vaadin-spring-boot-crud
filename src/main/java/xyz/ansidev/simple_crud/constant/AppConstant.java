@@ -27,6 +27,7 @@ public class AppConstant {
 	public static final String COLUMN_UPDATED_AT = "updatedAt";
 	public static final String COLUMN_CREATED_DATE = "createdDate";
 	public static final String COLUMN_UPDATED_DATE = "updatedDate";
+	public static final String COLUMN_ACTIONS = "actions";
 	
 	public static final String CAPTION_OK_BUTTON = "OK";
 	public static final String CAPTION_CANCEL_BUTTON = "Cancel";

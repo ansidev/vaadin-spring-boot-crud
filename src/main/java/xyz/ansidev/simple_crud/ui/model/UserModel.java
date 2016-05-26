@@ -20,6 +20,10 @@ public class UserModel extends User {
 		initDate();
 	}
 
+	public User toUser() {
+		return new User(id, username, password, firstName, lastName, email, posts, userMeta, createdAt, updatedAt);
+	}
+
 	private void initDate() {
 		createdDate = CustomDateFormatter.toDate(createdAt);
 		updatedDate = CustomDateFormatter.toDate(updatedAt);

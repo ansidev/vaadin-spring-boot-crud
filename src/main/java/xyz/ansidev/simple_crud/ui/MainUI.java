@@ -68,7 +68,7 @@ public class MainUI extends UI {
 		rootLayout.setExpandRatio(userRegistrationForm, 4);
 	}
 
-	@WebServlet(urlPatterns = "/*", name = "BlogUIServlet", asyncSupported = true)
+	@WebServlet(urlPatterns = "/dung", name = "MainUIServlet", asyncSupported = true)
 	@VaadinServletConfiguration(ui = MainUI.class, productionMode = false)
 	public static class BlogUIServlet extends VaadinServlet {
 		private static final long serialVersionUID = -8844423569138263543L;
