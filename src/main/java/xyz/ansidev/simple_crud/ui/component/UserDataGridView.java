@@ -24,6 +24,7 @@ import com.vaadin.ui.renderers.ButtonRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
 import xyz.ansidev.simple_crud.constant.AppConstant;
+import xyz.ansidev.simple_crud.constant.CssConstant;
 import xyz.ansidev.simple_crud.constant.HtmlTag;
 import xyz.ansidev.simple_crud.constant.UserFormConstant;
 import xyz.ansidev.simple_crud.entity.User;
@@ -32,6 +33,7 @@ import xyz.ansidev.simple_crud.repository.UserRepository;
 import xyz.ansidev.simple_crud.ui.model.UserModel;
 import xyz.ansidev.simple_crud.util.CustomStringUtils;
 import xyz.ansidev.simple_crud.util.HtmlUtils;
+import xyz.ansidev.simple_crud.util.transformer.UserTransformer;
 
 public class UserDataGridView extends VerticalLayout {
 
@@ -55,15 +57,19 @@ public class UserDataGridView extends VerticalLayout {
 		this.userRegistrationForm = userRegistrationForm;
 		this.userRepository = userRepository;
 
+		// Allow HTML Code in form caption
 		userRegistrationForm.setCaptionAsHtml(true);
 
+		// Set button width to 120px
 		addUserButton.setWidth(120, Unit.PIXELS);
 		addUserButton.addClickListener(e -> {
 			userRegistrationForm.setCaption(HtmlUtils.renderHtmlCode(HtmlTag.H2, UserFormConstant.FORM_CAPTION_ADD));
 			this.userRegistrationForm.saveUser(new User(), true);
 		});
 
+		// Set filter placeholder
 		filter.setInputPrompt(UserRegistrationMessage.FILTER_PLACEHOLDER);
+
 		// Replace listing with filtered content when user changes filter
 		filter.addTextChangeListener(e -> listUsers(e.getText()));
 
@@ -71,25 +77,29 @@ public class UserDataGridView extends VerticalLayout {
 		actionComponents.setSpacing(true);
 		actionComponents.setHeight(100, Unit.PERCENTAGE);
 
+		// Set full width and full height
 		grid.setSizeFull();
 		
+		// Set which column will be displayed
 		grid.setColumns(AppConstant.COLUMN_ID, AppConstant.COLUMN_USERNAME, AppConstant.COLUMN_EMAIL,
-				AppConstant.COLUMN_FIRST_NAME, AppConstant.COLUMN_LAST_NAME, AppConstant.COLUMN_CREATED_DATE,
-				AppConstant.COLUMN_UPDATED_DATE, AppConstant.COLUMN_ACTIONS);
+				AppConstant.COLUMN_FIRST_NAME, AppConstant.COLUMN_LAST_NAME, AppConstant.COLUMN_CREATED_AT,
+				AppConstant.COLUMN_UPDATED_AT, AppConstant.COLUMN_ACTIONS);
+
 		// Set column header caption and sortable for generated columns
-		Column createdDate = grid.getColumn(AppConstant.COLUMN_CREATED_DATE);
-		Column updatedDate = grid.getColumn(AppConstant.COLUMN_UPDATED_DATE);
+		Column createdAt = grid.getColumn(AppConstant.COLUMN_CREATED_AT);
+		Column updatedAt = grid.getColumn(AppConstant.COLUMN_UPDATED_AT);
 		Column actions = grid.getColumn(AppConstant.COLUMN_ACTIONS);
 
-		createdDate.setHeaderCaption(CustomStringUtils.splitCamelCase(AppConstant.COLUMN_CREATED_AT));
-		updatedDate.setHeaderCaption(CustomStringUtils.splitCamelCase(AppConstant.COLUMN_UPDATED_AT));
-
-		createdDate.setSortable(true);
-		updatedDate.setSortable(true);
+		createdAt.setHeaderCaption(CustomStringUtils.splitCamelCase(AppConstant.COLUMN_CREATED_AT));
+		updatedAt.setHeaderCaption(CustomStringUtils.splitCamelCase(AppConstant.COLUMN_UPDATED_AT));
 
 		actions.setRenderer(new ButtonRenderer(e -> {
-			User userToDelete = ((UserModel) e.getItemId()).toUser();
+			UserModel userModel = (UserModel) e.getItemId();
+			UserTransformer userTransformer = new UserTransformer();
+			User userToDelete = userTransformer.transformToModel(userModel);
+			// Delete user from database 
 			userRepository.delete(userToDelete);
+			// Remove user from data grid view
 			grid.getContainerDataSource().removeItem(e.getItemId());
 		}));
 
@@ -98,7 +108,7 @@ public class UserDataGridView extends VerticalLayout {
 		row.join(AppConstant.COLUMN_FIRST_NAME, AppConstant.COLUMN_LAST_NAME)
 				.setHtml(HtmlUtils.renderHtmlCode(HtmlTag.STRONG, UserFormConstant.FULL_NAME));
 
-		grid.sort("id");
+		grid.sort(AppConstant.COLUMN_ID);
 		// Connect selected User to editor or hide if none is selected
 		grid.addSelectionListener(e -> {
 			if (e.getSelected().isEmpty()) {
@@ -125,7 +135,7 @@ public class UserDataGridView extends VerticalLayout {
 			// Set filter field width based on column
 			if (pid.equals(AppConstant.COLUMN_ID)) {
 				filterField.setColumns(5);
-				cell.setStyleName("align-right");
+				cell.setStyleName(CssConstant.ALIGN_RIGHT);
 			} else {
 				filterField.setColumns(7);
 			}

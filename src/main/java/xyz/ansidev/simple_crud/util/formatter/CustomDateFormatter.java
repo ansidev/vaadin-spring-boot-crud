@@ -9,9 +9,8 @@ import org.slf4j.LoggerFactory;
 import xyz.ansidev.simple_crud.constant.AppConstant;
 import xyz.ansidev.simple_crud.ui.component.UserRegistrationForm;
 
-public class CustomDateFormatter {
+public class CustomDateFormatter implements IFormatter<LocalDateTime, String> {
 	private static final Logger LOG = LoggerFactory.getLogger(UserRegistrationForm.class);
-	private static final String DEFAULT_RETURN_VALUE = AppConstant.EMPTY;
 
 	/**
 	 * Format LocalDateTime with specific format.
@@ -24,24 +23,42 @@ public class CustomDateFormatter {
 	 */
 	public static String format(LocalDateTime date, String formatString) {
 		try {
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern(formatString);
-			return date.format(dtf);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(formatString);
+			return date.format(formatter);
 		} catch (NullPointerException e) {
 			LOG.error("NullPointerException: " + e.getMessage());
-			return DEFAULT_RETURN_VALUE;
+			return null;
 		} catch (Exception e) {
 			LOG.error("Exception: " + e.getMessage());
-			return DEFAULT_RETURN_VALUE;
+			return null;
 		}
 	}
 
 	/**
-	 * Format date to pattern dd/MM/YYYY.
+	 * Parse string to LocalDateTime.
 	 * 
-	 * @param date
-	 * @return Date as string, ex: 15/01/2016.
+	 * @param dateString
+	 *            String of LocalDateTime
+	 * @param formatter
+	 *            DateTimeFormatter
+	 * @return LocalDateTime
 	 */
-	public static String toDate(LocalDateTime date) {
+	public static LocalDateTime parse(String dateString, DateTimeFormatter formatter) {
+		try {
+			return LocalDateTime.parse(dateString, formatter);
+		} catch (Exception e) {
+			LOG.error("Exception: " + e.getMessage());
+			return null;
+		}
+	}
+
+	@Override
+	public String format(LocalDateTime date) {
 		return format(date, AppConstant.DATE_FORMAT_STRING);
+	}
+
+	@Override
+	public LocalDateTime parse(String presentation) {
+		return parse(presentation, AppConstant.DATE_FORMAT);
 	}
 }

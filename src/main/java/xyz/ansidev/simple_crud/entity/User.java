@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import xyz.ansidev.simple_crud.constant.AppConstant;
+import xyz.ansidev.simple_crud.ui.model.UserModel;
 
 @Entity
 @Table(name = "users")
@@ -27,37 +28,37 @@ public class User implements Serializable {
 
 	@Id
 	@GeneratedValue
-	protected Integer id;
+	private Integer id;
 
 	@Column(name = "username")
-	protected String username;
+	private String username;
 
 	@Column(name = "password")
-	protected String password;
+	private String password;
 
 	@Column(name = "first_name")
-	protected String firstName;
+	private String firstName;
 
 	@Column(name = "last_name")
-	protected String lastName;
+	private String lastName;
 
 	@Column(name = "email")
-	protected String email;
+	private String email;
 
 	// @JoinColumn(name = "role_id")
 	// private Role role;
 
 	@OneToMany(mappedBy = "author")
-	protected List<Post> posts;
+	private List<Post> posts;
 
 	@OneToMany(mappedBy = "owner")
-	protected List<UserMeta> userMeta;
+	private List<UserMeta> userMeta;
 
 	@Column(name = "created_at")
-	protected LocalDateTime createdAt;
+	private LocalDateTime createdAt;
 
 	@Column(name = "updated_at")
-	protected LocalDateTime updatedAt;
+	private LocalDateTime updatedAt;
 
 	public User() {
 		super();
@@ -94,6 +95,21 @@ public class User implements Serializable {
 		this.userMeta = userMeta;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
+	}
+
+	public User(Integer id, String username, String password, String firstName, String lastName, String email) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.password = password;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+	}
+
+	public User(UserModel userModel) {
+		this(userModel.getId(), userModel.getUsername(), userModel.getPassword(), userModel.getFirstName(),
+				userModel.getLastName(), userModel.getEmail());
 	}
 
 	public Integer getId() {
