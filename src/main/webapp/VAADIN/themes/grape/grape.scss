@@ -1,0 +1,14 @@
+@import "../valo/valo.scss";
+
+@mixin grape {
+    @include valo;
+
+    .v-text-align-right {
+  	    text-align: right;
+    }
+    
+    .v-text-align-right-important {
+  	    text-align: right !important;
+    }
+    
+}
