@@ -2,6 +2,8 @@ package xyz.ansidev.simple_crud.ui.component;
 
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.viritin.button.ConfirmButton;
 
@@ -42,6 +44,9 @@ import xyz.ansidev.simple_crud.util.validator.IFormValidator;
 @SpringComponent
 @UIScope
 public class UserRegistrationForm extends FormLayout implements IFormValidator {
+
+	private static final Logger LOG = LoggerFactory.getLogger(UserRegistrationForm.class);
+
 	private static final long serialVersionUID = 1L;
 
 	private final UserRepository userRepository;
@@ -113,7 +118,6 @@ public class UserRegistrationForm extends FormLayout implements IFormValidator {
 				String hashedPassword = BCrypt.hashpw(originalPassword, BCrypt.gensalt(12));
 				this.user.setPassword(hashedPassword);
 			}
-
 			// Notification information
 			String saveCaption;
 
@@ -140,6 +144,7 @@ public class UserRegistrationForm extends FormLayout implements IFormValidator {
 
 		btnCancel.addClickListener(e -> this.setVisible(false));
 		btnReset.addClickListener(e -> this.saveUser(this.user, this.isNewUser));
+		btnSave.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 	}
 
 	public boolean isNewUser() {

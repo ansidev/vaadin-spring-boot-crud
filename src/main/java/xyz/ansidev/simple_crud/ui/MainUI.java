@@ -31,7 +31,7 @@ import xyz.ansidev.simple_crud.util.HtmlUtils;
  * to the user interface and initialize non-component functionality.
  */
 @Title(AppConstant.APP_NAME)
-@Theme("valo")
+@Theme("grape")
 // @Theme("liferay")
 // @Theme("chameleon")
 // @Theme("reindeer")
@@ -68,7 +68,7 @@ public class MainUI extends UI {
 		rootLayout.setExpandRatio(userRegistrationForm, 4);
 	}
 
-	@WebServlet(urlPatterns = "/dung", name = "MainUIServlet", asyncSupported = true)
+	@WebServlet(urlPatterns = "/*", name = "MainUIServlet", asyncSupported = true)
 	@VaadinServletConfiguration(ui = MainUI.class, productionMode = false)
 	public static class BlogUIServlet extends VaadinServlet {
 		private static final long serialVersionUID = -8844423569138263543L;

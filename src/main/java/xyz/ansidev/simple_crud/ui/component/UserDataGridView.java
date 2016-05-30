@@ -79,7 +79,7 @@ public class UserDataGridView extends VerticalLayout {
 
 		// Set full width and full height
 		grid.setSizeFull();
-		
+
 		// Set which column will be displayed
 		grid.setColumns(AppConstant.COLUMN_ID, AppConstant.COLUMN_USERNAME, AppConstant.COLUMN_EMAIL,
 				AppConstant.COLUMN_FIRST_NAME, AppConstant.COLUMN_LAST_NAME, AppConstant.COLUMN_CREATED_AT,
@@ -97,7 +97,7 @@ public class UserDataGridView extends VerticalLayout {
 			UserModel userModel = (UserModel) e.getItemId();
 			UserTransformer userTransformer = new UserTransformer();
 			User userToDelete = userTransformer.transformToModel(userModel);
-			// Delete user from database 
+			// Delete user from database
 			userRepository.delete(userToDelete);
 			// Remove user from data grid view
 			grid.getContainerDataSource().removeItem(e.getItemId());
@@ -108,7 +108,9 @@ public class UserDataGridView extends VerticalLayout {
 		row.join(AppConstant.COLUMN_FIRST_NAME, AppConstant.COLUMN_LAST_NAME)
 				.setHtml(HtmlUtils.renderHtmlCode(HtmlTag.STRONG, UserFormConstant.FULL_NAME));
 
+		// Sort by Column ID
 		grid.sort(AppConstant.COLUMN_ID);
+
 		// Connect selected User to editor or hide if none is selected
 		grid.addSelectionListener(e -> {
 			if (e.getSelected().isEmpty()) {
@@ -116,7 +118,21 @@ public class UserDataGridView extends VerticalLayout {
 			} else {
 				userRegistrationForm
 						.setCaption(HtmlUtils.renderHtmlCode(HtmlTag.H2, UserFormConstant.FORM_CAPTION_EDIT));
-				userRegistrationForm.saveUser((User) grid.getSelectedRow(), false);
+				UserModel userModel = (UserModel) grid.getSelectedRow();
+				UserTransformer transformer = new UserTransformer();
+				User user = transformer.transformToModel(userModel);
+				userRegistrationForm.saveUser(user, false);
+			}
+		});
+
+		// Set right align for "Created At" and "Updated At" columns
+		grid.setCellStyleGenerator(cellReference -> {
+			Object pid = cellReference.getPropertyId();
+			if (AppConstant.COLUMN_CREATED_AT.equals(pid) || AppConstant.COLUMN_UPDATED_AT.equals(pid)) {
+				// When the current cell is number such as age, align text to right
+				return CssConstant.ALIGN_RIGHT;
+			} else {
+				return null;
 			}
 		});
 
@@ -135,7 +151,6 @@ public class UserDataGridView extends VerticalLayout {
 			// Set filter field width based on column
 			if (pid.equals(AppConstant.COLUMN_ID)) {
 				filterField.setColumns(5);
-				cell.setStyleName(CssConstant.ALIGN_RIGHT);
 			} else {
 				filterField.setColumns(7);
 			}
@@ -199,7 +214,7 @@ public class UserDataGridView extends VerticalLayout {
 
 					@Override
 					public String getValue(Item item, Object itemId, Object propertyId) {
-						return UserFormConstant.BUTTON_DELETE; // The caption
+						return UserFormConstant.BUTTON_DELETE;
 					}
 
 					@Override
